@@ -1,0 +1,31 @@
+*** Installation started 2009/04/19 00:56 ***
+Source: C:\Users\mitch\Documents\Programming\Python\lepton-0.9a.win32-py2.6.exe
+999 Root Key: HKEY_CURRENT_USER
+020 Reg DB Key: [Software\Microsoft\Windows\CurrentVersion\Uninstall]lepton-py2.6
+040 Reg DB Value: [Software\Microsoft\Windows\CurrentVersion\Uninstall\lepton-py2.6]DisplayName=Python 2.6 lepton-0.9a
+040 Reg DB Value: [Software\Microsoft\Windows\CurrentVersion\Uninstall\lepton-py2.6]UninstallString="C:\Python26\Removelepton.exe" -u "C:\Python26\lepton-wininst.log"
+200 File Copy: C:\Python26\Lib\site-packages\lepton-0.9a-py2.6.egg-info
+100 Made Dir: C:\Python26\Lib\site-packages\lepton
+200 File Copy: C:\Python26\Lib\site-packages\lepton\controller.py
+200 File Copy: C:\Python26\Lib\site-packages\lepton\domain.py
+200 File Copy: C:\Python26\Lib\site-packages\lepton\emitter.pyd
+200 File Copy: C:\Python26\Lib\site-packages\lepton\group.pyd
+200 File Copy: C:\Python26\Lib\site-packages\lepton\particle_struct.py
+200 File Copy: C:\Python26\Lib\site-packages\lepton\pygame_renderer.py
+200 File Copy: C:\Python26\Lib\site-packages\lepton\renderer.pyd
+200 File Copy: C:\Python26\Lib\site-packages\lepton\system.py
+200 File Copy: C:\Python26\Lib\site-packages\lepton\_controller.pyd
+200 File Copy: C:\Python26\Lib\site-packages\lepton\_domain.pyd
+200 File Copy: C:\Python26\Lib\site-packages\lepton\__init__.py
+200 File Copy: C:\Python26\Lib\site-packages\lepton\__init__.pyc
+200 File Copy: C:\Python26\Lib\site-packages\lepton\system.pyc
+200 File Copy: C:\Python26\Lib\site-packages\lepton\pygame_renderer.pyc
+200 File Copy: C:\Python26\Lib\site-packages\lepton\particle_struct.pyc
+200 File Copy: C:\Python26\Lib\site-packages\lepton\domain.pyc
+200 File Copy: C:\Python26\Lib\site-packages\lepton\controller.pyc
+200 File Copy: C:\Python26\Lib\site-packages\lepton\__init__.pyo
+200 File Copy: C:\Python26\Lib\site-packages\lepton\system.pyo
+200 File Copy: C:\Python26\Lib\site-packages\lepton\pygame_renderer.pyo
+200 File Copy: C:\Python26\Lib\site-packages\lepton\particle_struct.pyo
+200 File Copy: C:\Python26\Lib\site-packages\lepton\domain.pyo
+200 File Copy: C:\Python26\Lib\site-packages\lepton\controller.pyo
