@@ -1,0 +1,135 @@
+class Tower (object):
+	""" Tower Base Class """
+	def __init__ (self, position=(0,0)):
+		self.highlight=False
+		self.pos = position
+		self.center = (position[0]+1, position[1]+1)
+		# screen coords
+		self.llx = 0
+		self.lly = 0
+		self.urx = 0
+		self.ury = 0
+		self.cx = 0
+		self.cy = 0
+		
+		self.direction = 0
+		self.active = False
+		self.target = None
+		self.cost = 5
+		self.range_sq = 4
+		self.range = self.range_sq * self.range_sq
+		
+		self.upgrade_cost = 40
+		self.upgrade_time = 2
+		self.damage_per_shot = 3
+		self.sell_price = 3
+		self.time_between_shots = 1.2
+		self.time_since_last_shot = 3
+		self.target_mode = 0	# 0 - none, 1 strong 2 weak 3 fast 4 slow 5 near 6 end of path
+		self.upgradeable = True
+
+		self.mouse_over = False
+	
+	def on_mouse_motion(self, x, y, dx, dy):
+		if (x>self.llx and x<self.urx and y>self.lly and y<self.ury) and not game.state & game.states['paused']:
+			self.mouse_over=True
+			game.highlighted=self
+		else:
+			self.mouse_over=False
+			
+	def on_mouse_release(self, x, y, buttons, modifiers):
+		if self.mouse_over and buttons & mouse.LEFT and not game.state & game.states['paused'] and not game.deploying:
+			game.selected=self
+	
+	def deploy (self):
+		# make map squares impassable
+		game.map.cell[mymouse.dx][mymouse.dy].passable=False
+		game.map.cell[mymouse.dx+1][mymouse.dy].passable=False
+		game.map.cell[mymouse.dx+1][mymouse.dy+1].passable=False
+		game.map.cell[mymouse.dx][mymouse.dy+1].passable=False
+		# put pointer to tower in map cells
+		game.map.cell[mymouse.dx][mymouse.dy].tower=self
+		game.map.cell[mymouse.dx+1][mymouse.dy].tower=self
+		game.map.cell[mymouse.dx+1][mymouse.dy+1].tower=self
+		game.map.cell[mymouse.dx][mymouse.dy+1].tower=self
+		self.pos = (mymouse.dx, mymouse.dy)
+		self.center = (self.pos[0]+1, self.pos[1]+1)
+		# get screen coord area
+		self.llx = game.map.llx + self.pos[0] * game.map.cellsize
+		self.lly = game.map.lly + self.pos[1] * game.map.cellsize
+		self.urx = game.map.llx + (self.pos[0]+2) * game.map.cellsize
+		self.ury = game.map.lly + (self.pos[1]+2) * game.map.cellsize
+		self.cx = game.map.llx + self.center[0] * game.map.cellsize
+		self.cy = game.map.lly + self.center[1] * game.map.cellsize
+		
+		if game.map.recalc_routes():	# recalc routes
+			game.towers.append ( self )
+			window.push_handlers(self)
+			return True
+		else:
+			# make routes passable again
+			game.map.cell[mymouse.dx][mymouse.dy].passable=True
+			game.map.cell[mymouse.dx+1][mymouse.dy].passable=True
+			game.map.cell[mymouse.dx+1][mymouse.dy+1].passable=True
+			game.map.cell[mymouse.dx][mymouse.dy+1].passable=True
+			# remove pointers to tower in cells
+			game.map.cell[mymouse.dx][mymouse.dy].tower=None
+			game.map.cell[mymouse.dx+1][mymouse.dy].tower=None
+			game.map.cell[mymouse.dx+1][mymouse.dy+1].tower=None
+			game.map.cell[mymouse.dx][mymouse.dy+1].tower=None
+			game.map.recalc_routes()	# recalc original routes
+			return False	# tell calling function that deploy failed
+		
+	def deploy_fast (self):	# used when re-checking of paths is not needed - ie. for an upgrade
+		# get screen coord area
+		self.llx = game.map.llx + self.pos[0] * game.map.cellsize
+		self.lly = game.map.lly + self.pos[1] * game.map.cellsize
+		self.urx = game.map.llx + (self.pos[0]+2) * game.map.cellsize
+		self.ury = game.map.lly + (self.pos[1]+2) * game.map.cellsize
+		self.cx = game.map.llx + self.center[0] * game.map.cellsize
+		self.cy = game.map.lly + self.center[1] * game.map.cellsize
+		game.towers.append ( self )
+		window.push_handlers(self)	
+			
+	def sell (self):
+		window.remove_handlers(self)
+		self.mouse_over = False # BUGFIX: range still drawn when S key used to sell and mouse over spot where tower was
+		game.towers.remove(self)
+		game.selected = None
+		if game.state & game.states['pregame']:
+			# take no time
+			game.towers.append ( aSell (self.pos[0],self.pos[1], 0.01) )
+			# and free
+			game.credits += self.cost
+		else:
+			game.towers.append ( aSell (self.pos[0],self.pos[1], game.map.sell_time) )
+			game.credits += self.sell_price
+			game.map.sell_time *= game.map.sell_time_multiplier
+
+	def upgrade (self):
+		print "DOING UPGRADE!"
+		
+		self.mouse_over = False
+		pos=copy.copy(self.pos)
+		upgrade_to = self.get_upgrade()
+		if game.state & game.states['pregame']:
+			self.upgrade_time = 0.01
+		game.towers.append ( anUpgrade (pos[0], pos[1], self.upgrade_time, upgrade_to , copy.copy(self.target_mode) ))
+		window.remove_handlers(self)
+		game.towers.remove( self )
+		game.selected=None
+
+	def get_upgrade(self):
+		pass	
+
+	def update (self, dt):
+		pass
+		
+	def draw (self):
+		pass
+	
+	def draw_selection (self):
+		selected_tex.blit (self.llx, self.lly)
+		
+	def draw_highlight (self):
+		pass
